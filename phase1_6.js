@@ -1,7 +1,7 @@
 (function(){
   const NAV=[
-    ['dashboard','Главная','dashboard'],['clients','Клиенты','users'],['projects','Проекты','folder'],['tasks','Задачи','check-square'],
-    ['estimates','Сметы и BOQ','calculator'],['work_schedule','График и контроль стройки','hard-hat'],
+    ['dashboard','Главная','dashboard'],['projects','Проекты','folder'],['estimates','Сметы и BOQ','calculator'],['tasks','Задачи','check-square'],
+    ['work_schedule','График и контроль стройки','hard-hat'],['clients','Клиенты','users'],
     ['warehouse_accounting','Снабжение, склад и материалы','warehouse'],['financial_accounting','Финансы и отчёты','chart'],
     ['rate_catalog','Справочник расценок','book-open'],['employees','Сотрудники','id-card'],['payroll','Зарплаты и дизайн','banknote'],
     ['notifications','Уведомления','bell']
