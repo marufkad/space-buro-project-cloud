@@ -3,13 +3,13 @@
     ['dashboard','Главная','dashboard'],['projects','Проекты','folder'],['estimates','Сметы и BOQ','calculator'],['tasks','Задачи','check-square'],
     ['work_schedule','График и контроль стройки','hard-hat'],['clients','Клиенты','users'],
     ['warehouse_accounting','Снабжение, склад и материалы','warehouse'],['financial_accounting','Финансы и отчёты','chart'],
-    ['rate_catalog','Справочник расценок','book-open'],['employees','Сотрудники','id-card'],['payroll','Зарплаты и дизайн','banknote'],
+    ['rate_catalog','Справочник расценок','book-open'],['employees','Штаб зарплата','id-card'],['payroll','Зарплата и выплаты','banknote'],
     ['notifications','Уведомления','bell']
   ];
   const ALIAS={site_control:'work_schedule',gantt:'work_schedule',procurement:'warehouse_accounting',warehouse:'warehouse_accounting',materials:'warehouse_accounting',suppliers:'warehouse_accounting',management_reports:'financial_accounting',expenses:'financial_accounting',payments:'financial_accounting'};
   const baseLoad=loadAll,baseRender=renderPage,baseUpdate=updateShell,baseSettings=settingsPage,baseAction=actionForPage,basePayroll=payrollPage,baseEdit=window.editRecord,baseOpenRecord=window.openModuleRecord,baseOpenCreate=window.openModuleCreate;
   Object.assign(state,{quickDraft:null,executionTab:'schedule',warehouseTab:'overview',financeTab:'dashboard',estimateMilestones:[],estimateVersions:[],payrollPayments:[]});
-  Object.assign(pageMeta,{estimates:['Сметы и BOQ','Новая смета'],work_schedule:['График и контроль стройки','Новый отчёт'],warehouse_accounting:['Снабжение, склад и материалы','Новый документ'],financial_accounting:['Финансы и отчёты','Новая операция'],payroll:['Зарплаты и дизайн','Новая операция']});
+  Object.assign(pageMeta,{estimates:['Сметы и BOQ','Новая смета'],work_schedule:['График и контроль стройки','Новый отчёт'],warehouse_accounting:['Снабжение, склад и материалы','Новый документ'],financial_accounting:['Финансы и отчёты','Новая операция'],employees:['Штаб зарплата','Новый сотрудник'],payroll:['Зарплата и выплаты','Новая операция']});
 
   const safe16=p=>rawApi(p).catch(()=>[]);
   const n=v=>Number(v||0),sum=(rows,key)=>rows.reduce((a,x)=>a+n(typeof key==='function'?key(x):x[key]),0);
