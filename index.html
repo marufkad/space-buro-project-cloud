@@ -4,6 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#10233d">
+  <meta name="description" content="Space Buro Project Cloud — управление проектами, BOQ, задачами, строительством и мебельным производством.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Space Buro — Project Cloud">
+  <meta property="og:description" content="Единая система управления строительными, ремонтными и мебельными проектами Space Buro.">
+  <meta property="og:url" content="https://marufkad.github.io/space-buro-project-cloud/">
+  <meta property="og:image" content="https://marufkad.github.io/space-buro-project-cloud/og-image.svg">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <title>Space Buro — Project Cloud</title>
   <style>
     :root{--navy:#10233d;--navy2:#1d3d65;--ink:#172a44;--muted:#7f8da0;--line:#e4e9f0;--bg:#f4f7fa;--white:#fff;--blue:#2e73d2;--green:#1b9362;--amber:#c78817;--red:#c95750;--violet:#7656c4;--shadow:0 4px 18px rgba(15,35,58,.05)}
@@ -30,28 +37,29 @@
   </style>
   <link rel="stylesheet" href="phase1_8.css">
   <link rel="stylesheet" href="phase1_9.css">
+  <link rel="stylesheet" href="service-library.css">
 </head>
 <body>
   <div class="scrim" id="scrim"></div>
   <aside class="sidebar" id="sidebar">
-    <div class="brand"><div class="brand-mark"><img id="brandLogo" class="hidden" alt="Логотип"><span id="brandFallback">SB</span></div><div class="brand-copy"><b id="brandName">SPACE BURO</b><small>PROJECT CLOUD</small></div><button class="sidebar-toggle" id="sidebarToggle" title="Свернуть меню"><span data-icon="panel-left"></span></button></div>
+    <div class="brand"><div class="brand-mark"><img id="brandLogo" class="hidden" alt="Логотип Space Buro"><span id="brandFallback">SB</span></div><div class="brand-copy"><b id="brandName">SPACE BURO</b><small>PROJECT CLOUD</small></div><button class="sidebar-toggle" id="sidebarToggle" title="Свернуть меню" aria-label="Свернуть или развернуть меню"><span data-icon="panel-left"></span></button></div>
     <div class="nav-group"><div class="nav-label">РАБОЧИЙ СТОЛ</div><button class="nav-btn active" data-page="dashboard"><span class="nav-icon" data-icon="dashboard"></span><span class="nav-text">Главная</span></button></div>
     <div class="nav-group"><div class="nav-label">ОСНОВНОЙ ПРОЦЕСС</div><button class="nav-btn" data-page="projects"><span class="nav-icon" data-icon="folder"></span><span class="nav-text">Проекты</span><span class="nav-count" id="projectsCount">0</span></button><button class="nav-btn" data-page="estimates"><span class="nav-icon" data-icon="calculator"></span><span class="nav-text">Сметы и BOQ</span></button><button class="nav-btn" data-page="tasks"><span class="nav-icon" data-icon="check-square"></span><span class="nav-text">Задачи</span><span class="nav-count" id="tasksCount">0</span></button><button class="nav-btn" data-page="work_schedule"><span class="nav-icon" data-icon="hard-hat"></span><span class="nav-text">График и контроль стройки</span></button></div>
     <div class="nav-group"><div class="nav-label">CRM</div><button class="nav-btn" data-page="clients"><span class="nav-icon" data-icon="users"></span><span class="nav-text">Клиенты</span><span class="nav-count" id="clientsCount">0</span></button></div>
     <div class="nav-group"><div class="nav-label">УПРАВЛЕНИЕ КОМПАНИЕЙ</div><button class="nav-btn" data-page="warehouse_accounting"><span class="nav-icon" data-icon="warehouse"></span><span class="nav-text">Снабжение, склад и материалы</span></button><button class="nav-btn finance-nav" data-page="financial_accounting"><span class="nav-icon" data-icon="chart"></span><span class="nav-text">Финансы и отчёты</span></button><button class="nav-btn" data-page="rate_catalog"><span class="nav-icon" data-icon="book-open"></span><span class="nav-text">Справочник расценок</span></button></div>
     <div class="nav-group"><div class="nav-label">КОМАНДА</div><button class="nav-btn employee-nav" data-page="employees"><span class="nav-icon" data-icon="id-card"></span><span class="nav-text">Штаб зарплата</span></button><button class="nav-btn payroll-nav" data-page="payroll"><span class="nav-icon" data-icon="banknote"></span><span class="nav-text">Зарплата и выплаты</span></button></div>
     <div class="nav-group"><div class="nav-label">СИСТЕМА</div><button class="nav-btn" data-page="notifications"><span class="nav-icon" data-icon="bell"></span><span class="nav-text">Уведомления</span><span class="nav-count hidden" id="notificationsCount">0</span></button><button class="nav-btn settings-nav" data-page="settings"><span class="nav-icon" data-icon="settings"></span><span class="nav-text">Настройки</span></button></div>
-    <div class="sidebar-foot"><div class="user-card"><div class="avatar" id="avatar">SB</div><div class="user-text"><b id="userName">Space Buro</b><small id="userRole">—</small></div><button class="logout-mini" id="logoutBtn" title="Выйти">↪</button></div></div>
+    <div class="sidebar-foot"><div class="user-card"><div class="avatar" id="avatar">SB</div><div class="user-text"><b id="userName">Space Buro</b><small id="userRole">—</small></div><button class="logout-mini" id="logoutBtn" title="Выйти" aria-label="Выйти из системы">↪</button></div></div>
   </aside>
   <main>
-    <header class="topbar"><button class="mobile-menu" id="mobileMenu">☰</button><div class="top-title"><p class="eyebrow" id="breadcrumb">SPACE BURO / ГЛАВНАЯ</p><h1 id="pageTitle">Главная</h1></div><div class="top-actions"><div class="cloud-pill">● Облако активно</div><button class="btn primary" id="pageAction">＋ <span>Новый проект</span></button></div></header>
+    <header class="topbar"><button class="mobile-menu" id="mobileMenu" aria-label="Открыть меню">☰</button><div class="top-title"><p class="eyebrow" id="breadcrumb">SPACE BURO / ГЛАВНАЯ</p><h1 id="pageTitle">Главная</h1></div><div class="top-actions"><div class="cloud-pill" id="cloudStatus" role="status">● Облако активно</div><button class="btn primary" id="pageAction">＋ <span>Новый проект</span></button></div></header>
     <nav class="module-ribbon" aria-label="Быстрый доступ"><div class="module-ribbon-track" id="moduleRibbon"><div class="module-placeholder"><span data-icon="settings"></span><span>Панель быстрого доступа пуста — выберите нужные разделы в Настройках.</span></div><span class="hidden" id="ribbonTasksCount">0</span></div></nav>
     <div class="page" id="content"><div class="empty">Загрузка системы…</div></div>
   </main>
 
   <div class="overlay show" id="loginOverlay"><form class="login-card" id="loginForm"><div class="login-logo"><img id="loginBrandLogo" class="hidden" alt="Логотип"><span id="loginBrandFallback">SB</span></div><h2>Вход в Project Cloud</h2><p>Данные компании защищены Supabase. Войдите под своим пользователем.</p><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Пароль<input name="password" type="password" autocomplete="current-password" required></label><div class="login-error" id="loginError"></div><button class="btn primary" id="loginBtn">Войти</button></form></div>
-  <div class="overlay" id="modalOverlay"><form class="modal" id="modalForm"><div class="modal-head"><h2 id="modalTitle">Новая запись</h2><button type="button" class="close" data-close>×</button></div><div class="form-grid" id="modalFields"></div><div class="modal-actions"><button type="button" class="btn" data-close>Отмена</button><button class="btn primary" id="modalSubmit">Сохранить</button></div></form></div>
-    <div class="overlay drawer-layer" id="drawerOverlay"><aside class="drawer"><div class="drawer-head"><button class="close" data-close>←</button><b class="drawer-number" id="drawerNumber"></b><button class="close" data-close>×</button></div><div class="drawer-content" id="drawerContent"></div></aside></div>
+  <div class="overlay" id="modalOverlay"><form class="modal" id="modalForm"><div class="modal-head"><h2 id="modalTitle">Новая запись</h2><button type="button" class="close" data-close aria-label="Закрыть окно">×</button></div><div class="form-grid" id="modalFields"></div><div class="modal-actions"><button type="button" class="btn" data-close>Отмена</button><button class="btn primary" id="modalSubmit">Сохранить</button></div></form></div>
+    <div class="overlay drawer-layer" id="drawerOverlay"><aside class="drawer"><div class="drawer-head"><button class="close" data-close aria-label="Назад">←</button><b class="drawer-number" id="drawerNumber"></b><button class="close" data-close aria-label="Закрыть карточку">×</button></div><div class="drawer-content" id="drawerContent"></div></aside></div>
   <div class="toast" id="toast"></div>
 
   <script>
@@ -63,8 +71,8 @@
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const money=n=>new Intl.NumberFormat('en-AE',{maximumFractionDigits:0}).format(Number(n)||0);
   const date=v=>v?new Intl.DateTimeFormat('ru',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(v)):'—';
-  const statusTone=s=>({'Новый':'gray','Согласование':'amber','В работе':'blue','Монтаж':'violet','Завершён':'green',new:'gray',assigned:'blue',in_progress:'violet',waiting_materials:'amber',completed:'green',expected:'amber',paid:'green',overdue:'red'}[s]||'gray');
-  const taskStatus=s=>({new:'Новая',assigned:'Назначена',in_progress:'В работе',waiting_materials:'Ожидает материалы',completed:'Выполнена'}[s]||s||'—');
+  const statusTone=s=>({'Новый':'gray','Согласование':'amber','В работе':'blue','Монтаж':'violet','Завершён':'green',new:'gray',created:'gray',assigned:'blue',blocked:'red',in_progress:'violet',review:'amber',done:'green',accepted:'green',waiting_materials:'amber',completed:'green',expected:'amber',paid:'green',overdue:'red'}[s]||'gray');
+  const taskStatus=s=>({new:'Новая',created:'Создана',assigned:'Назначена',blocked:'Заблокирована',in_progress:'В работе',review:'На проверке',done:'Выполнена',accepted:'Принята',waiting_materials:'Ожидает материалы',completed:'Выполнена'}[s]||s||'—');
   const roleName=r=>({owner:'Руководитель',admin:'Администратор',project_manager:'Менеджер проекта',foreman:'Прораб',designer:'Дизайнер',procurement:'Закупщик',storekeeper:'Кладовщик',accountant:'Бухгалтер',marketing:'Маркетолог',employee:'Сотрудник'}[r]||r||'—');
   function toast(message){const t=$('#toast');t.textContent=message;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
   function canFinance(){return ['owner','admin','accountant','project_manager'].includes(state.profile?.role)}
@@ -134,5 +142,6 @@
   <script src="phase1_7.js"></script>
   <script src="phase1_8.js"></script>
   <script src="phase1_9.js"></script>
+  <script src="service-library.js"></script>
 </body>
 </html>
