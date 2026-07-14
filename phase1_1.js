@@ -140,7 +140,32 @@
   openClientModal=function(){openModal('Новый клиент',clientFields(),async d=>insert('clients',d))};
   function openClientEdit(id){const c=state.clients.find(x=>x.id===id);openModal('Изменить клиента',clientFields(c),async d=>update('clients',id,d))}
 
-  function taskFields(t={}){return input('title','Название задачи','text',t.title||'','required')+select('project_id','Проект','<option value="">Без проекта</option>'+optionList(state.projects,'id','name',t.project_id||''))+select('stage_id','Этап','<option value="">Без этапа</option>'+optionList(state.stages.filter(s=>!t.project_id||s.project_id===t.project_id),'id','name',t.stage_id||''))+select('assignee_id','Ответственный','<option value="">Не назначен</option>'+optionList(state.profiles,'id','full_name',t.assignee_id||''))+input('start_date','Дата начала','date',t.start_date||'')+input('due_date','Срок','date',t.due_date||'')+select('status','Статус',[['new','Новая'],['assigned','Назначена'],['in_progress','В работе'],['waiting_materials','Ожидает материалы'],['completed','Выполнена']].map(([v,n])=>`<option value="${v}" ${t.status===v?'selected':''}>${n}</option>`).join(''))+select('priority','Приоритет',[['low','Низкий'],['normal','Обычный'],['high','Высокий'],['critical','Критический']].map(([v,n])=>`<option value="${v}" ${t.priority===v?'selected':''}>${n}</option>`).join(''))+input('progress','Готовность, %','number',t.progress||0,'min="0" max="100"')+input('planned_hours','Плановые часы','number',t.planned_hours||0,'step="0.5"')+input('actual_hours','Фактические часы','number',t.actual_hours||0,'step="0.5"')+input('cost','Стоимость, AED','number',t.cost||0)+select('recurrence_rule','Повторение',`<option value="">Не повторять</option><option value="daily" ${t.recurrence_rule==='daily'?'selected':''}>Ежедневно</option><option value="weekly" ${t.recurrence_rule==='weekly'?'selected':''}>Еженедельно</option><option value="monthly" ${t.recurrence_rule==='monthly'?'selected':''}>Ежемесячно</option>`)+select('requires_verification','Проверка руководителем',`<option value="false" ${!t.requires_verification?'selected':''}>Не требуется</option><option value="true" ${t.requires_verification?'selected':''}>Требуется</option>`)+`<label class="full">Описание<textarea name="description">${esc(t.description||'')}</textarea></label>`}
+  function taskFields(t={}){
+    const legacyStatuses=[['new','Новая'],['assigned','Назначена'],['in_progress','В работе'],['waiting_materials','Ожидает материалы'],['completed','Выполнена']];
+    const workflowTransitions={
+      created:[['created','Создана'],['blocked','Заблокировать'],['in_progress','Начать работу']],
+      blocked:[['blocked','Заблокирована'],['created','Разблокировать']],
+      in_progress:[['in_progress','В работе'],['review','Передать на проверку']],
+      review:[['review','На проверке'],['done','Работа выполнена']],
+      done:[['done','Выполнена'],['accepted','Принять работу']],
+      accepted:[['accepted','Принята']]
+    };
+    const statuses=t.workflow_managed?(workflowTransitions[t.status]||[[t.status,t.status]]):legacyStatuses;
+    return input('title','Название задачи','text',t.title||'','required')+
+      select('project_id','Проект','<option value="">Без проекта</option>'+optionList(state.projects,'id','name',t.project_id||''))+
+      select('stage_id','Этап','<option value="">Без этапа</option>'+optionList(state.stages.filter(s=>!t.project_id||s.project_id===t.project_id),'id','name',t.stage_id||''))+
+      select('assignee_id','Ответственный','<option value="">Не назначен</option>'+optionList(state.profiles,'id','full_name',t.assignee_id||''))+
+      input('start_date','Дата начала','date',t.start_date||'')+input('due_date','Срок','date',t.due_date||'')+
+      select('status','Статус',statuses.map(([v,n])=>`<option value="${v}" ${t.status===v?'selected':''}>${n}</option>`).join(''))+
+      select('priority','Приоритет',[['low','Низкий'],['normal','Обычный'],['high','Высокий'],['critical','Критический']].map(([v,n])=>`<option value="${v}" ${t.priority===v?'selected':''}>${n}</option>`).join(''))+
+      input('progress','Готовность, %','number',t.progress||0,'min="0" max="100"')+
+      input('planned_hours','Плановые часы','number',t.planned_hours||0,'step="0.5"')+
+      input('actual_hours','Фактические часы','number',t.actual_hours||0,'step="0.5"')+
+      input('cost','Стоимость, AED','number',t.cost||0)+
+      select('recurrence_rule','Повторение',`<option value="">Не повторять</option><option value="daily" ${t.recurrence_rule==='daily'?'selected':''}>Ежедневно</option><option value="weekly" ${t.recurrence_rule==='weekly'?'selected':''}>Еженедельно</option><option value="monthly" ${t.recurrence_rule==='monthly'?'selected':''}>Ежемесячно</option>`)+
+      select('requires_verification','Проверка руководителем',`<option value="false" ${!t.requires_verification?'selected':''}>Не требуется</option><option value="true" ${t.requires_verification?'selected':''}>Требуется</option>`)+
+      `<label class="full">Описание<textarea name="description">${esc(t.description||'')}</textarea></label>`;
+  }
   function taskRecord(d){return {...d,project_id:d.project_id||null,stage_id:d.stage_id||null,assignee_id:d.assignee_id||null,start_date:d.start_date||null,due_date:d.due_date||null,progress:Number(d.progress||0),planned_hours:Number(d.planned_hours||0),actual_hours:Number(d.actual_hours||0),cost:Number(d.cost||0),recurrence_rule:d.recurrence_rule||null,requires_verification:d.requires_verification==='true'}}
   openTaskModal=function(projectId=''){openModal('Новая задача',taskFields({project_id:projectId,status:'new',priority:'normal'}),async d=>insert('tasks',taskRecord(d)))};
   function openTaskEdit(id){const t=state.tasks.find(x=>x.id===id);openModal('Изменить задачу',taskFields(t),async d=>update('tasks',id,taskRecord(d)))}
