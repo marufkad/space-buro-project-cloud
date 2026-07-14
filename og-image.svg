@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#10233d"/>
+  <circle cx="1030" cy="120" r="260" fill="#2e73d2" opacity=".28"/>
+  <circle cx="1100" cy="600" r="330" fill="#24b3c7" opacity=".12"/>
+  <rect x="92" y="96" width="94" height="94" rx="18" fill="#fff"/>
+  <text x="139" y="158" text-anchor="middle" fill="#10233d" font-family="Arial" font-size="32" font-weight="800">SB</text>
+  <text x="92" y="300" fill="#fff" font-family="Arial" font-size="72" font-weight="800">SPACE BURO</text>
+  <text x="96" y="370" fill="#8fc9ff" font-family="Arial" font-size="34" font-weight="700" letter-spacing="7">PROJECT CLOUD</text>
+  <text x="96" y="450" fill="#d7e5f5" font-family="Arial" font-size="28">Construction · Fit-out · Furniture · BOQ</text>
+</svg>
