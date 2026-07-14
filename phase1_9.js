@@ -10,7 +10,20 @@
     const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dubai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()),get=type=>parts.find(x=>x.type===type)?.value;
     return `${get('year')}-${get('month')}-${get('day')}`;
   };
-  const safe19=path=>rawApi(path).catch(()=>{state.phase19Missing=[...new Set([...(state.phase19Missing||[]),path.split('?')[0].split('/').pop()])];return []});
+  const relation19=path=>path.split('?')[0].split('/').pop();
+  const delay19=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  const missingRelation19=error=>['42P01','PGRST205'].includes(error?.code)||(error?.status===404&&/(schema cache|relation|table|view).*(not found|does not exist)|could not find.*(relation|table|view)/i.test(`${error?.message||''} ${error?.details||''}`));
+  const transient19=error=>!error?.status||[401,408,429,502,503,504].includes(error.status);
+  async function safe19(path){
+    let lastError=null;
+    for(let attempt=0;attempt<2;attempt++){
+      try{return {rows:await rawApi(path),error:null}}
+      catch(error){lastError=error;if(attempt===0&&(transient19(error)||missingRelation19(error))){await delay19(650);continue}break}
+    }
+    const error={relation:relation19(path),status:lastError?.status||0,code:lastError?.code||'',message:lastError?.message||'Ошибка соединения',isMissing:missingRelation19(lastError)};
+    console.warn('Phase 1.9 data request failed',error);
+    return {rows:[],error};
+  }
   async function mapLimit19(items,limit,worker){const result=new Array(items.length);let cursor=0;async function run(){while(cursor<items.length){const index=cursor++;result[index]=await worker(items[index],index)}}await Promise.all(Array.from({length:Math.min(limit,items.length)},run));return result}
   const labelProject19=id=>state.projects.find(x=>x.id===id)?.name||'—';
   const labelPerson19=id=>state.profiles.find(x=>x.id===id)?.full_name||state.employees.find(x=>x.id===id)?.full_name||'—';
@@ -39,7 +52,7 @@
     productionOrders19:state.productionOrders19||[],productionBom19:state.productionBom19||[],productionRouting19:state.productionRouting19||[],
     dailyLogs19:state.dailyLogs19||[],dailyLogLabor19:state.dailyLogLabor19||[],dailyLogProgress19:state.dailyLogProgress19||[],dailyLogMaterials19:state.dailyLogMaterials19||[],dailyLogMedia19:state.dailyLogMedia19||[],
     qualityRecords19:state.qualityRecords19||[],qualityChecklistItems19:state.qualityChecklistItems19||[],handovers19:state.handovers19||[],handoverItems19:state.handoverItems19||[],
-    projectCostForecast19:state.projectCostForecast19||[],scheduleRangeDays19:state.scheduleRangeDays19||42,projectSearch19:state.projectSearch19||'',projectHealth19:state.projectHealth19||'all',phase19Missing:state.phase19Missing||[]
+    projectCostForecast19:state.projectCostForecast19||[],scheduleRangeDays19:state.scheduleRangeDays19||42,projectSearch19:state.projectSearch19||'',projectHealth19:state.projectHealth19||'all',phase19Missing:state.phase19Missing||[],phase19Errors:state.phase19Errors||[]
   });
 
   async function loadPhase19Data(){
@@ -54,7 +67,10 @@
       '/rest/v1/quality_records?select=*&order=due_date.asc.nullslast','/rest/v1/quality_checklist_items?select=*','/rest/v1/handovers?select=*&order=created_at.desc','/rest/v1/handover_items?select=*',
       '/rest/v1/project_cost_forecast?select=*','/rest/v1/submittal_revisions?select=*&order=revision_no.desc'
     ];
-    const rows=await mapLimit19(paths,7,safe19);
+    state.phase19Missing=[];state.phase19Errors=[];
+    const results=await mapLimit19(paths,7,safe19),rows=results.map(result=>result.rows);
+    state.phase19Errors=results.map(result=>result.error).filter(Boolean);
+    state.phase19Missing=[...new Set(state.phase19Errors.map(error=>error.relation))];
     [state.costCodes,state.projectCostCodes,state.changeOrders,state.changeOrderItems,state.rfis19,state.submittals19,state.clientDecisions19,
       state.projectDocuments19,state.documentRevisions19,state.transmittals19,state.transmittalItems19,state.scheduleBaselines19,state.scheduleBaselineItems19,state.scheduleActivities19,state.activityDependencies19,state.scheduleVariance19,
       state.procurementCommitments19,state.procurementCommitmentItems19,state.supplierInvoices19,state.supplierInvoiceItems19,state.threeWayMatch19,
@@ -71,7 +87,12 @@
   };
 
   function rowsFor19(name,projectId){return (state[name]||[]).filter(x=>x.project_id===projectId)}
-  function readiness19(){return state.phase19Missing.length?`<div class="pc-readiness"><b>Phase 1.9 ожидает миграцию Supabase</b><span>Недоступно ${state.phase19Missing.length} таблиц или views. Интерфейс сохранит старые разделы, но новые операции станут активны после запуска SQL.</span></div>`:''}
+  function readiness19(){
+    if(!state.phase19Errors.length)return '';
+    const missing=state.phase19Errors.filter(error=>error.isMissing),names=state.phase19Missing.slice(0,7).join(', '),migration=missing.length>0;
+    return `<div class="pc-readiness"><b>${migration?'Phase 1.9 ожидает миграцию Supabase':'Временная ошибка связи с Supabase'}</b><span>Недоступно: ${esc(names)}${state.phase19Missing.length>7?` и ещё ${state.phase19Missing.length-7}`:''}. ${migration?'Проверьте, что SQL Phase 1.9 выполнен полностью.':'Данные не потеряны — повторите проверку.'}</span><button class="btn" onclick="retryPhase19()">Повторить</button></div>`;
+  }
+  window.retryPhase19=async()=>{state.phase19Missing=[];state.phase19Errors=[];renderPage();await loadPhase19Data();renderPage();toast(state.phase19Errors.length?'Часть данных пока недоступна':'Связь с Supabase восстановлена')};
   function costCode19(id){return state.costCodes.find(x=>x.id===id)||{code:'UNASSIGNED',name:'Без кода'}}
   function projectCostCodeLabel19(row){const c=costCode19(row.cost_code_id);return `${c.code} · ${local19(c.name)}`}
   function projectCostOptions19(projectId,selected=''){
